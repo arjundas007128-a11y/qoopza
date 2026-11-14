@@ -1,22 +1,144 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qoopza | Online Shopping</title><meta name="description" content="Shop everyday favourites at Qoopza."><style>
-:root{--blue:#1769d2;--bg:#f3f6fc;--line:#dfe6f0}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#17243a}header{background:#fff;padding:16px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 2px 12px #14294b12}.logo{font-size:29px;font-weight:800;color:var(--blue)}.logo span{color:#f2bd28}button{border:0;border-radius:12px;padding:12px 16px;background:var(--blue);color:white;font-weight:700;cursor:pointer}.secondary{background:#edf3fc;color:#10284b;border:1px solid var(--line)}main{max-width:1100px;margin:24px auto;padding:0 16px}.hero{background:linear-gradient(120deg,#164b9c,#2689ef);color:white;border-radius:24px;padding:36px;margin-bottom:28px}.hero h1{font-size:clamp(30px,5vw,48px);margin:0 0 10px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}.product-icon{font-size:54px;background:#f0f5fd;border-radius:14px;text-align:center;padding:18px}.price{font-size:20px;font-weight:800;margin:10px 0}.actions{display:flex;gap:8px;flex-wrap:wrap}.hidden{display:none!important}.modal{position:fixed;inset:0;background:#08172a99;display:grid;place-items:center;padding:16px;z-index:5}.modalbox{background:#fff;border-radius:18px;padding:22px;width:min(560px,100%);max-height:90vh;overflow:auto}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.order{border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0;background:#fff}.badge{display:inline-block;background:#e8f5ed;color:#176b37;padding:4px 9px;border-radius:20px;font-size:12px;font-weight:700}.notice{background:#fff8e6;border:1px solid #f0d68b;padding:12px;border-radius:12px;color:#634b12;font-size:13px}input,select,textarea{width:100%;padding:12px;border:1px solid #cbd6e5;border-radius:10px;margin:6px 0 14px;font:inherit}label{font-weight:700;font-size:14px}.muted{color:#65738a;font-size:14px}footer{text-align:center;padding:30px;color:#64748b}
-</style></head><body>
-<header><div class="logo">Qoopza<span>.</span></div><div class="actions"><button class="secondary" onclick="showCart()">🛒 Cart (<span id="cartCount">0</span>)</button><button class="secondary" onclick="showOrders()">My Orders</button><button class="secondary" onclick="showAdmin()">Admin</button></div></header>
-<main><section class="hero"><h1>Find your everyday favourites.</h1><p>Explore useful picks across tech, fashion and more.</p><button onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})" style="background:#fff;color:#1556a4">Shop products →</button></section><div class="sectionhead"><h2 id="products">Shop products</h2><span class="muted">Sample products — replace with your inventory</span></div><div class="grid" id="productGrid"></div></main><footer>© <span id="year"></span> Qoopza.</footer>
-<div class="modal hidden" id="modal"><div class="modalbox"><div class="sectionhead"><h2 id="modalTitle">Cart</h2><button class="secondary" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Qoopza | Online Shopping</title>
+  <meta name="description" content="Discover everyday essentials, electronics, fashion and accessories at Qoopza. Browse products and build your shopping cart.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#1769e0">
+  <style>
+    :root{--blue:#1769e0;--dark:#10213b;--muted:#64748b;--bg:#f4f7fb;--line:#e5eaf2}
+    *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--dark);background:var(--bg)}
+    a{color:inherit;text-decoration:none}.top{background:#0d3d91;color:white;text-align:center;padding:8px;font-size:13px}
+    header{background:white;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #10213b12}
+    .head{max-width:1150px;margin:auto;padding:14px 18px;display:flex;align-items:center;gap:18px}
+    .logo{font-size:27px;font-weight:900;color:var(--blue);letter-spacing:-1px;white-space:nowrap}
+    .search{flex:1;display:flex;background:#f0f4fa;border-radius:12px;overflow:hidden}
+    .search input{width:100%;border:0;background:transparent;padding:13px;outline:0;font-size:15px}
+    .search button,.primary{border:0;background:var(--blue);color:white;padding:0 18px;font-weight:bold;cursor:pointer}
+    .cartbtn{border:1px solid var(--line);background:white;border-radius:10px;padding:11px 14px;font-weight:bold;cursor:pointer}
+    nav{max-width:1150px;margin:auto;padding:0 18px 12px;display:flex;gap:22px;overflow:auto;color:#40536d;font-size:14px}
+    nav a:hover{color:var(--blue)}
+    main{max-width:1150px;margin:22px auto;padding:0 18px}
+    .hero{background:linear-gradient(120deg,#0d3d91,#2588f4);color:white;border-radius:22px;padding:38px;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:210px}
+    .hero h1{font-size:clamp(28px,5vw,44px);margin:0 0 10px}.hero p{margin:0 0 20px;color:#e1edff}
+    .hero .pill{display:inline-block;background:white;color:#1456b6;padding:11px 17px;border-radius:10px;font-weight:bold}
+    .hero-mark{font-size:90px;filter:drop-shadow(0 8px 10px #082b6b55)}
+    .sectionhead{display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px}
+    .sectionhead h2{font-size:22px;margin:0}.muted{color:var(--muted);font-size:13px}
+    .cats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .cat{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center;font-weight:bold;cursor:pointer}
+    .cat span{display:block;font-size:29px;margin-bottom:8px}
+    .products{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .product{background:white;border:1px solid var(--line);border-radius:15px;overflow:hidden;display:flex;flex-direction:column}
+    .pic{height:150px;background:#eef4fc;display:grid;place-items:center;font-size:60px}
+    .pbody{padding:13px;display:flex;flex-direction:column;gap:8px;flex:1}
+    .pbody h3{font-size:15px;margin:0;line-height:1.35}.price{font-weight:800;font-size:18px;color:#0d4da8}
+    .add{background:#ffcf36;border:0;border-radius:9px;padding:10px;font-weight:bold;cursor:pointer;margin-top:auto}
+    .add:hover{filter:brightness(.96)}
+    footer{margin-top:40px;background:#10213b;color:#dbe6f7;padding:28px 18px}
+    .foot{max-width:1150px;margin:auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    .foot strong{color:white}.foot p{font-size:13px;line-height:1.6;max-width:520px}
+    .empty{grid-column:1/-1;background:white;padding:28px;text-align:center;border-radius:14px;color:var(--muted)}
+    .overlay{display:none;position:fixed;inset:0;background:#07162c77;z-index:10}
+    .panel{position:absolute;right:0;top:0;height:100%;width:min(420px,94vw);background:white;padding:20px;overflow:auto}
+    .panelhead{display:flex;justify-content:space-between;align-items:center}
+    .close{border:0;background:#eef3fa;border-radius:8px;padding:8px 12px;cursor:pointer}
+    .cartrow{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:14px 0}
+    .qty button{border:1px solid var(--line);background:white;border-radius:6px;padding:3px 8px;cursor:pointer}
+    .checkout{width:100%;padding:13px;border:0;border-radius:9px;background:var(--blue);color:white;font-weight:bold;margin-top:14px;cursor:pointer}
+    @media(max-width:760px){.head{flex-wrap:wrap;gap:10px}.logo{font-size:24px}.search{order:3;flex-basis:100%}.hero{padding:25px}.hero-mark{font-size:62px}.products{grid-template-columns:repeat(2,1fr)}.cats{grid-template-columns:repeat(2,1fr)}.pic{height:125px}}
+    @media(max-width:380px){.products{gap:8px}.pbody{padding:10px}.pic{font-size:48px}}
+  </style>
+</head>
+<body>
+  <div class="top">Welcome to Qoopza — simple shopping, happy living!</div>
+  <header>
+    <div class="head">
+      <a class="logo" href="#" aria-label="Qoopza home">Qoopza<span style="color:#ffbd24">.</span></a>
+      <form class="search" id="searchForm">
+        <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products">
+        <button type="submit">Search</button>
+      </form>
+      <button class="cartbtn" id="openCart">🛒 Cart (<span id="cartCount">0</span>)</button>
+    </div>
+    <nav>
+      <a href="#home">Home</a><a href="#categories">Categories</a><a href="#products">All Products</a><a href="#about">About Qoopza</a>
+    </nav>
+  </header>
+  <main id="home">
+    <section class="hero">
+      <div><h1>Find your everyday favourites.</h1><p>Explore useful picks across tech, fashion and more.</p><a class="pill" href="#products">Shop products →</a></div>
+      <div class="hero-mark" aria-hidden="true">🛍️</div>
+    </section>
+    <section id="categories">
+      <div class="sectionhead"><h2>Shop by category</h2><span class="muted">Choose a category</span></div>
+      <div class="cats">
+        <button class="cat" data-cat="Electronics"><span>🎧</span>Electronics</button>
+        <button class="cat" data-cat="Fashion"><span>👕</span>Fashion</button>
+        <button class="cat" data-cat="Shoes"><span>👟</span>Shoes</button>
+        <button class="cat" data-cat="Accessories"><span>⌚</span>Accessories</button>
+      </div>
+    </section>
+    <section id="products">
+      <div class="sectionhead"><h2>Featured products</h2><button class="muted" id="showAll" style="border:0;background:none;cursor:pointer">Show all</button></div>
+      <div class="products" id="productGrid"></div>
+    </section>
+  </main>
+  <footer id="about">
+    <div class="foot">
+      <div><strong style="font-size:24px">Qoopza.</strong><p>Your online shopping destination. Browse our sample catalogue and add your favourite items to the cart.</p></div>
+      <div><strong>About</strong><p>Qoopza is an independent demo storefront. Product names, prices and availability shown here are sample information.</p></div>
+      <div><strong>Contact</strong><p>Add your official business email or customer-support details here before publishing.</p></div>
+    </div>
+  </footer>
+  <div class="overlay" id="cartOverlay">
+    <aside class="panel" aria-label="Shopping cart">
+      <div class="panelhead"><h2>Your cart</h2><button class="close" id="closeCart">Close ✕</button></div>
+      <div id="cartItems"></div>
+      <h3 id="cartTotal">Total: ₹0</h3>
+      <button class="checkout" id="checkout">Continue</button>
+      <p class="muted">Demo cart only. No payment or order is processed by this website.</p>
+    </aside>
+  </div>
 <script>
-const products=[{id:1,name:"Wireless Headphones",category:"Electronics",price:799,icon:"🎧"},{id:2,name:"Everyday T-Shirt",category:"Fashion",price:399,icon:"👕"},{id:3,name:"Smart Watch",category:"Electronics",price:1299,icon:"⌚"},{id:4,name:"Backpack",category:"Accessories",price:649,icon:"🎒"}];
-let cart=JSON.parse(localStorage.getItem("qz_cart")||"[]");const money=n=>"₹"+Number(n).toLocaleString("en-IN");const saveCart=()=>{localStorage.setItem("qz_cart",JSON.stringify(cart));document.getElementById("cartCount").textContent=cart.reduce((a,x)=>a+x.qty,0)};
-function render(){document.getElementById("productGrid").innerHTML=products.map(p=>`<article class="card"><div class="product-icon">${p.icon}</div><p class="muted">${p.category}</p><h3>${p.name}</h3><div class="price">${money(p.price)}</div><button onclick="add(${p.id})">Add to cart</button></article>`).join("");saveCart()}
-function add(id){let x=cart.find(i=>i.id===id);x?x.qty++:cart.push({id,qty:1});saveCart()}
-function openModal(title,body){document.getElementById("modalTitle").textContent=title;document.getElementById("modalBody").innerHTML=body;document.getElementById("modal").classList.remove("hidden")}function closeModal(){document.getElementById("modal").classList.add("hidden")}
-function showCart(){let total=cart.reduce((s,i)=>s+products.find(p=>p.id===i.id).price*i.qty,0);let rows=cart.map(i=>{let p=products.find(p=>p.id===i.id);return `<div class="order"><b>${p.name}</b> — ${money(p.price)} × ${i.qty}<div class="actions"><button class="secondary" onclick="changeQty(${i.id},-1)">−</button><button class="secondary" onclick="changeQty(${i.id},1)">+</button><button class="secondary" onclick="removeItem(${i.id})">Remove</button></div></div>`}).join("");openModal("Your cart",`${rows||"<p>Your cart is empty.</p>"}<h3>Total: ${money(total)}</h3>${cart.length?'<button onclick="checkout()">Proceed to checkout</button>':""}`)}
-function changeQty(id,n){let x=cart.find(i=>i.id===id);x.qty+=n;if(x.qty<1)cart=cart.filter(i=>i.id!==id);saveCart();showCart()}function removeItem(id){cart=cart.filter(i=>i.id!==id);saveCart();showCart()}
-function checkout(){if(!cart.length)return;let total=cart.reduce((s,i)=>s+products.find(p=>p.id===i.id).price*i.qty,0);openModal("Checkout",`<form id="checkoutForm" onsubmit="placeOrder(event)"><label>Customer name</label><input name="name" required maxlength="70"><label>Phone number</label><input name="phone" required inputmode="tel" pattern="[0-9]{10}" placeholder="10-digit mobile number"><label>Delivery address</label><textarea name="address" required maxlength="300"></textarea><label>Payment method</label><select name="payment"><option value="COD">Cash on Delivery</option><option value="UPI">UPI (demo selection only)</option></select><div class="notice">Demo only: this website does not process or verify payments and does not send orders to a server. Never enter UPI PIN, OTP, card details or passwords here.</div><h3>Order total: ${money(total)}</h3><button type="submit">Place demo order</button></form>`)}
-function placeOrder(e){e.preventDefault();let f=new FormData(e.target),total=cart.reduce((s,i)=>s+products.find(p=>p.id===i.id).price*i.qty,0);let order={id:"QZ"+Date.now().toString().slice(-8),date:new Date().toLocaleString(),name:f.get("name"),phone:f.get("phone"),address:f.get("address"),payment:f.get("payment"),status:"Received (demo)",total,items:cart.map(i=>({...i,name:products.find(p=>p.id===i.id).name,price:products.find(p=>p.id===i.id).price}))};let orders=JSON.parse(localStorage.getItem("qz_orders")||"[]");orders.unshift(order);localStorage.setItem("qz_orders",JSON.stringify(orders));cart=[];saveCart();let msg=order.payment==="UPI"?"UPI selected, but no payment is collected or verified in this demo.":"Pay cash on delivery in this demo.";openModal("Demo order created",`<span class="badge">Order ${order.id}</span><h3>${money(total)}</h3><p>${msg}</p><p class="muted">Saved only in this browser on this device. The shop owner will not receive it.</p><button onclick="showOrders()">View my orders</button>`)}
-function showOrders(){let a=JSON.parse(localStorage.getItem("qz_orders")||"[]");openModal("My orders",a.length?a.map(o=>`<div class="order"><b>${o.id}</b> <span class="badge">${o.status}</span><p>${o.date} · ${money(o.total)} · ${o.payment}</p><p>${o.items.map(i=>i.name+" × "+i.qty).join(", ")}</p></div>`).join(""):"<p>No orders saved on this device yet.</p>")}
-function showAdmin(){openModal("Admin — local demo",`<div class="notice">Not a secure admin panel. It can only see demo orders saved in this same browser/device. Do not use with real customer data.</div><p>A real admin panel needs server-side login, database permissions and verified payment callbacks.</p><button onclick="adminOrders()">View local demo orders</button>`)}
-function adminOrders(){let a=JSON.parse(localStorage.getItem("qz_orders")||"[]");openModal("Local demo orders",a.length?a.map(o=>`<div class="order"><b>${o.id}</b><p>${o.name} · ${o.phone}</p><p>${o.address}</p><p>${o.payment} · ${money(o.total)}</p><label>Demo status</label><select onchange="setStatus('${o.id}',this.value)"><option>Received (demo)</option><option>Processing (demo)</option><option>Shipped (demo)</option><option>Delivered (demo)</option><option>Cancelled (demo)</option></select></div>`).join(""):"<p>No local orders.</p>")}
-function setStatus(id,status){let a=JSON.parse(localStorage.getItem("qz_orders")||"[]");let o=a.find(x=>x.id===id);if(o){o.status=status;localStorage.setItem("qz_orders",JSON.stringify(a))}}
-document.getElementById("year").textContent=new Date().getFullYear();render();
-</script></body></html>
+const products = [
+  {id:1,name:"Wireless Bluetooth Headphones",cat:"Electronics",price:899,emoji:"🎧"},
+  {id:2,name:"Smart Watch",cat:"Accessories",price:1299,emoji:"⌚"},
+  {id:3,name:"Everyday Casual T-Shirt",cat:"Fashion",price:499,emoji:"👕"},
+  {id:4,name:"Running Sneakers",cat:"Shoes",price:999,emoji:"👟"},
+  {id:5,name:"Portable Bluetooth Speaker",cat:"Electronics",price:749,emoji:"🔊"},
+  {id:6,name:"Classic Backpack",cat:"Accessories",price:699,emoji:"🎒"},
+  {id:7,name:"Sunglasses",cat:"Fashion",price:399,emoji:"🕶️"},
+  {id:8,name:"Sports Shoes",cat:"Shoes",price:1199,emoji:"🥾"}
+];
+let cart = JSON.parse(localStorage.getItem("qoopza-cart") || "[]");
+let activeCategory = "All", query = "";
+const grid = document.getElementById("productGrid");
+function save(){localStorage.setItem("qoopza-cart",JSON.stringify(cart));renderCart()}
+function renderProducts(){
+  const shown=products.filter(p=>(activeCategory==="All"||p.cat===activeCategory)&&p.name.toLowerCase().includes(query.toLowerCase()));
+  grid.innerHTML=shown.length?shown.map(p=>`<article class="product"><div class="pic">${p.emoji}</div><div class="pbody"><span class="muted">${p.cat}</span><h3>${p.name}</h3><div class="price">₹${p.price.toLocaleString("en-IN")}</div><button class="add" onclick="addToCart(${p.id})">Add to cart</button></div></article>`).join(""):`<div class="empty">No products found. Try another search.</div>`;
+}
+function addToCart(id){const item=cart.find(x=>x.id===id);if(item)item.qty++;else cart.push({id,qty:1});save();document.getElementById("cartOverlay").style.display="block"}
+function renderCart(){
+  document.getElementById("cartCount").textContent=cart.reduce((n,x)=>n+x.qty,0);
+  const box=document.getElementById("cartItems");
+  if(!cart.length){box.innerHTML='<p class="muted">Your cart is empty.</p>';document.getElementById("cartTotal").textContent="Total: ₹0";return}
+  box.innerHTML=cart.map(x=>{const p=products.find(y=>y.id===x.id);return `<div class="cartrow"><div><strong>${p.name}</strong><div class="muted">₹${p.price.toLocaleString("en-IN")}</div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button> ${x.qty} <button onclick="changeQty(${p.id},1)">+</button></div></div><strong>₹${(p.price*x.qty).toLocaleString("en-IN")}</strong></div>`}).join("");
+  const total=cart.reduce((n,x)=>n+products.find(p=>p.id===x.id).price*x.qty,0);
+  document.getElementById("cartTotal").textContent="Total: ₹"+total.toLocaleString("en-IN");
+}
+function changeQty(id,delta){const x=cart.find(y=>y.id===id);if(x){x.qty+=delta;if(x.qty<=0)cart=cart.filter(y=>y.id!==id);save()}}
+document.getElementById("searchForm").addEventListener("submit",e=>{e.preventDefault();query=document.getElementById("searchInput").value.trim();activeCategory="All";renderProducts();document.getElementById("products").scrollIntoView()});
+document.querySelectorAll(".cat").forEach(b=>b.addEventListener("click",()=>{activeCategory=b.dataset.cat;query="";document.getElementById("searchInput").value="";renderProducts();document.getElementById("products").scrollIntoView()}));
+document.getElementById("showAll").onclick=()=>{activeCategory="All";query="";document.getElementById("searchInput").value="";renderProducts()};
+document.getElementById("openCart").onclick=()=>document.getElementById("cartOverlay").style.display="block";
+document.getElementById("closeCart").onclick=()=>document.getElementById("cartOverlay").style.display="none";
+document.getElementById("cartOverlay").addEventListener("click",e=>{if(e.target.id==="cartOverlay")e.currentTarget.style.display="none"});
+document.getElementById("checkout").onclick=()=>alert("This is a demo storefront. No order or payment has been placed.");
+renderProducts();renderCart();
+</script>
+</body>
+</html>
